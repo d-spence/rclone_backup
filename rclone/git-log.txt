@@ -1,0 +1,391 @@
+commit 89f2d43f17e60f38619fda797fb0a349ff819d7e
+Author: Nick Craig-Wood <nick@craig-wood.com>
+Date:   Mon Oct 26 13:26:58 2020 +0000
+
+    Version v1.53.2
+
+commit cfc5d76fcabae8bdc92a0523ccde99c8d2b5f009
+Author: Nick Craig-Wood <nick@craig-wood.com>
+Date:   Mon Oct 26 11:19:06 2020 +0000
+
+    build: stop using set-env and set-path in the GitHub actions
+    
+    A security problem was discovered when using set-env and
+    set-path. This has been deprecated by GitHub and a new mechanism
+    introduced.
+    
+    This patch switches to using the new mechanism which will stop GitHub
+    warning about the use of the old mechanism.
+    
+    See: https://github.com/actions/toolkit/security/advisories/GHSA-mfwh-5m23-j46w
+
+commit 0af493f693a27f09942b472df334fd85f5825667
+Author: Nick Craig-Wood <nick@craig-wood.com>
+Date:   Sun Oct 25 18:26:01 2020 +0000
+
+    build: work around GitHub actions brew problem
+    
+    Brew was failing with
+    
+        fatal: 'origin' does not appear to be a git repository
+        fatal: Could not read from remote repository.
+    
+    See: https://github.com/actions/virtual-environments/issues/1811
+    See: https://github.com/actions/virtual-environments/issues/1869
+
+commit 51b3ee9a976412c4c0bef64cef63eec91e2b5cbf
+Author: Nick Craig-Wood <nick@craig-wood.com>
+Date:   Sun Oct 25 16:15:41 2020 +0000
+
+    test: add ListRetries config parameter to integration tests
+    
+    Occasionally the b2 tests fail because the integration tests don't
+    retry hard enough with their new setting of -list-retries 3. Override
+    this setting to 5 for the b2 tests only.
+
+commit 6a4b49479dc098576503d2066c18868218ab9c56
+Author: Nick Craig-Wood <nick@craig-wood.com>
+Date:   Sun Oct 25 16:02:52 2020 +0000
+
+    union: create root directories if none exist
+    
+    This fixes the TestUnion: integration test if the /tmp/union[123] dirs
+    don't exist.
+
+commit 4b03ee0f99619e70c7f5f71e2981f16921f21860
+Author: Nick Craig-Wood <nick@craig-wood.com>
+Date:   Sun Oct 25 08:48:23 2020 +0000
+
+    test: remove TestS3Ceph: and TestSwiftCeph: from integration tests
+    
+    Unfortunately we don't have access to this server any more
+
+commit 2f6231f7ac040814d83624a6162a14332955d9ad
+Author: albertony <12441419+albertony@users.noreply.github.com>
+Date:   Tue Oct 20 12:43:28 2020 +0200
+
+    jottacloud: avoid double url escaping of device/mountpoint - fixes #4697
+
+commit c0e6f54f01fafaedfd2bae4cd5bc498678a58cb2
+Author: Nick Craig-Wood <nick@craig-wood.com>
+Date:   Fri Sep 25 18:32:31 2020 +0100
+
+    local: fix sizes and syncing with --links option on Windows - fixes #4581
+    
+    Before this change rclone returned the size from the Stat call of the
+    link. On Windows this reads as 0 always, however on unix it reads as
+    the length of the text in the link. This caused errors like this when
+    syncing:
+    
+        Failed to copy: corrupted on transfer: sizes differ 0 vs 13
+    
+    This change causes Windows platforms to read the link and use that as
+    the size of the link instead of 0 which fixes the problem.
+
+commit def7b77d0f8ddf4d4f5c4502c55a5e18ed9367db
+Author: Nick Craig-Wood <nick@craig-wood.com>
+Date:   Wed Sep 30 16:06:57 2020 +0100
+
+    vfs: Fix --no-modtime to not attempt to set modtimes (as documented)
+    
+    See: https://forum.rclone.org/t/rclone-mount-with-azure-blob-archive-tier/19414
+
+commit 51b18a4a264fd964cea5e4cfc825045319fc4624
+Author: Nick Craig-Wood <nick@craig-wood.com>
+Date:   Wed Oct 7 10:58:04 2020 +0100
+
+    onedrive: fix disk usage for sharepoint
+    
+    Some onedrive sharepoints appear to return all 0s for quota
+    
+        "quota":{"deleted":0,"remaining":0,"total":0,"used":0}
+    
+    This commit detects this and returns unknown for all quota parts.
+    
+    See: https://forum.rclone.org/t/zero-size-volume-when-mounting-onedrive-sharepoint/19597
+
+commit 7cb76f9054b3082ef881a0b89188ee7783696753
+Author: buengese <buengese@gmail.com>
+Date:   Tue Oct 6 16:37:24 2020 +0200
+
+     jottacloud: remove clientSecret from config when upgrading to token based authentication - #4645
+
+commit 00ccc93482a2c9a5b4d64575e0719dd776fc897f
+Author: Anagh Kumar Baranwal <6824881+darthShadow@users.noreply.github.com>
+Date:   Sat Oct 3 14:14:25 2020 +0530
+
+    s3: Add missing regions for AWS
+    
+    Signed-off-by: Anagh Kumar Baranwal <6824881+darthShadow@users.noreply.github.com>
+
+commit f9fe494d93111052ba9f065f31126c6d67a80141
+Author: Dov Murik <dov.murik@gmail.com>
+Date:   Sat Oct 3 21:11:06 2020 +0300
+
+    docs: Box: explain about the backslash-like unicode character
+    
+    Add the full name of the backslash-lookalike unicode character.
+
+commit 4a0c2667876ee84b68cd18c177d6f04e0ed99ea3
+Author: edwardxml <56691903+edwardxml@users.noreply.github.com>
+Date:   Mon Oct 5 17:19:00 2020 +0100
+
+    crypt: update docs
+    
+    Mostly tense, clarity and point of view proposed changes.
+    
+    There is still some duplication and benefits that would accrue from further examples.
+
+commit f48d0a518cadfac87576a3f5c4c796b1fe0dbbaa
+Author: gyutw <30371241+gyutw@users.noreply.github.com>
+Date:   Mon Sep 28 11:08:52 2020 +0300
+
+    fichier: increase maximum file size from 100GB to 300GB - fixes #4634
+
+commit 99ff5947734ddf9706badcf62d6c13cee494362f
+Author: Russell Cattelan <cattelan@digitalelves.com>
+Date:   Wed Aug 19 22:25:03 2020 -0500
+
+    cmd/mount2: fix the swapped UID / GID values
+
+commit 6c140705e346caa56dd71dfa7dcca44860b2ebb7
+Author: Christopher Stewart <6573710+1f47a@users.noreply.github.com>
+Date:   Fri Sep 18 21:03:13 2020 +1000
+
+    s3: fix spelling mistake
+    
+    Fix spelling mistake "patific" => "pacific"
+
+commit e76963a971eb240e490a6a8faf60e8f7007b865a
+Author: Leo Luan <leoluan@us.ibm.com>
+Date:   Mon Oct 5 02:00:00 2020 -0700
+
+    vfs: Add a missed update of used cache space
+    
+    The missed update can cause incorrect before-cleaning cache stats
+    and a pre-mature condition broadcast in purgeOld before the cache
+    space use is reduced below the quota.
+
+commit 43ad7b10a2c243cf06f14eb815ece214a9c533b5
+Author: Leo Luan <leoluan@us.ibm.com>
+Date:   Mon Oct 5 01:47:54 2020 -0700
+
+    vfs: Add exponential backoff during ENOSPC retries
+    
+    Add an exponentially increasing delay during retries up ENOSPC error
+    to avoid exhausting the 10 retries too soon when the cache space
+    recovery from item resets is not available from the file system yet
+    or consumed by other large cache writes.
+
+commit f6970c65dd9e80fbc1d19eefaae897b2edec4429
+Author: Leo Luan <leoluan@us.ibm.com>
+Date:   Tue Sep 15 01:46:31 2020 -0700
+
+    vfs: Fix missed concurrency control between some item operations and reset
+    
+    Item reset is invoked by cache cleaner for synchronous recovery
+    from ENOSPC errors. The reset operation removes the cache file and
+    closes/reopens the downloaders.  Although most parts of reset and
+    other item operations are done with the item mutex held, the mutex
+    is released during fd.WriteAt and downloaders calls. We used preAccess
+    and postAccess calls to serialize Reset, ReadAt, and Open, but missed
+    some other item operations. The patch adds preAccess/postAccess
+    calls in Sync, Truncate, Close, WriteAt, and rename.
+
+commit 6012179c67276cb90ceb879d3138cafc09a2732c
+Author: Leo Luan <leoluan@us.ibm.com>
+Date:   Tue Sep 15 01:36:17 2020 -0700
+
+    vfs: Fix a race condition in retryFailedResets
+    
+    A failed item reset is saved in the errItems for retryFailedResets
+    to process.  If the item gets closed before the retry, the item may
+    have been removed from the c.item array. Previous code did not
+    account for this condition. This patch adds the check for the
+    exitence of the retry items in retryFailedResets.
+
+commit 3ecdd4516f28bf445b782af594baaab403d3129f
+Author: Leo Luan <leoluan@us.ibm.com>
+Date:   Tue Sep 15 01:32:16 2020 -0700
+
+    vfs: Fix a deadlock vulnerability in downloaders.Close
+    
+    The downloaders.Close() call acquires the downloaders' mutex before
+    calling the wait group wait and the main downloaders thread has a
+    periodical (5 seconds interval) call to kick its waiters and the
+    waiter dispatch function tries to get the mutex. So a deadlock can
+    occur if the Close() call starts, gets the mutex, while the main
+    downloader thread already got the timer's tick and proceeded to
+    call kickWaiters. The deadlock happens when the Close call gets
+    the mutex between the timer's kick and the main downloader thread
+    gets the mutex first. So it's a pretty short period of time and
+    it probably explains why the problem has not surfaced, maybe
+    something like tens of nanoseconds out of 5 seconds (~10^^-8).
+    It took 5 days of continued stressing the Close calls for the
+    deadlock to appear.
+
+commit 3b18ba13582423af929b6b76787a916aa76e2d5f
+Author: buengese <buengese@gmail.com>
+Date:   Mon Oct 5 20:13:05 2020 +0200
+
+    jottacloud: remove DirMove workaround as it's not required anymore - also fixes #4655
+
+commit 5fbbab58edc13427c97cb26f8e47cbe75c11b6a9
+Author: Nick Craig-Wood <nick@craig-wood.com>
+Date:   Mon Oct 5 10:23:23 2020 +0100
+
+    operations: fix spurious "--checksum is in use but the source and destination have no hashes in common"
+    
+    Before this change rclone would emit the message
+    
+        --checksum is in use but the source and destination have no hashes in common; falling back to --size-only
+    
+    When the source or destination hash was missing as well as when the
+    source and destination had no hashes in common.
+    
+    This first case is very confusing for users when the source and
+    destination do have a hash in common.
+    
+    This change fixes that and makes sure the error message is not emitted
+    on missing hashes even when there is a hash in common.
+    
+    See: https://forum.rclone.org/t/source-and-destination-have-no-hashes-in-common-for-unencrypted-drive-to-local-sync/19531
+
+commit 80b93beedf81e82cd9a69f6e6ba9eb3fb18fcd14
+Author: Nick Craig-Wood <nick@craig-wood.com>
+Date:   Sun Oct 4 16:38:29 2020 +0100
+
+    operations: fix use of --suffix without --backup-dir
+    
+    As part of the original work adding this feature it was overlooked
+    that this didn't actually work for full rclone copy/sync.
+    
+    This commit fixes the problem and adds a test to make sure it stays
+    working.
+    
+    See: https://forum.rclone.org/t/suffix-not-working-on-folder-upload-via-ssh-sftp/19526
+
+commit eb5c47fcfa4df775a7d88fe7ce5b92c9b020bc19
+Author: Nick Craig-Wood <nick@craig-wood.com>
+Date:   Sun Sep 27 11:04:37 2020 +0100
+
+    mount: docs: remove incorrect statement about --vfs-cache-mode full
+    
+    See: https://forum.rclone.org/t/is-this-documentation-correct/19376
+
+commit c7335e780b7649b6022dcac60d1df7574da1ad4e
+Author: Ivan Andreev <ivandeex@gmail.com>
+Date:   Sun May 17 23:39:44 2020 +0300
+
+    chunker: disable ListR to fix missing files on GDrive (workaround #3972)
+
+commit 878ebf3658b9c0446b55a10e720aae0ff6f6bc40
+Author: Ivan Andreev <ivandeex@gmail.com>
+Date:   Mon May 18 15:10:47 2020 +0300
+
+    mailru: fix invalid timestamp on corrupted files (fixes #4229)
+
+commit 1c860ef2522576a9c287e731b536996d9c9f31d5
+Author: Nick Craig-Wood <nick@craig-wood.com>
+Date:   Fri Sep 18 12:30:01 2020 +0100
+
+    accounting: stabilize display order of transfers on Windows
+    
+    Before this change we sorted transfers in the stats list solely on
+    time started. However if --check-first was in use then lots of
+    transfers could be started in the same millisecond. Because Windows
+    time resolution is only 1mS this caused the entries to sort equal and
+    bounce around in the list.
+    
+    This change fixes the sort so that if the time is equal it uses the
+    name which should stabilize the order.
+    
+    Fixes #4599
+
+commit a0494479f921692e5261bd80e29a84f065327c06
+Author: buengese <buengese@gmail.com>
+Date:   Tue Sep 22 03:15:09 2020 +0200
+
+    sftp: always convert the checksum to lower case - fixes #4518
+
+commit 9a9a13418894f4200c21943984d95c326ea6823a
+Author: Ivan Andreev <ivandeex@gmail.com>
+Date:   Fri Sep 18 17:58:44 2020 +0300
+
+    Merge pull request #4608 from ivandeex/pr-chunker-crypt
+    
+    chunker: fix upload over crypt (fixes #4570)
+
+commit 41ccf01f29716077c500b9a37ba72e5075a237c5
+Author: Ivan Andreev <ivandeex@gmail.com>
+Date:   Thu Sep 17 22:44:03 2020 +0300
+
+    mailru: re-enable fixed chunker tests
+    
+    This reverts commit 9d3d397f50fe94df0f723a571507e2ce72428ab6.
+
+commit 06f3daa64bef067d1857c6e21c2b4af95cb1122c
+Author: Ivan Andreev <ivandeex@gmail.com>
+Date:   Thu Sep 17 22:02:59 2020 +0300
+
+    mailru: fix range requests after june changes on server
+
+commit d5fe63c0a07b17e843739c68ac96614b672caa60
+Author: Ivan Andreev <ivandeex@gmail.com>
+Date:   Thu Sep 17 10:58:04 2020 +0300
+
+    mailru: fix uploads after recent changes on server
+    
+    similar fix: https://github.com/yar229/WebDavMailRuCloud/commit/5efa9958f1f8fae568908e3f547c2580f48d49dc
+
+commit b7f0e776f6b3e84f7b8444eb18aecb4a8eb6732b
+Author: Muffin King <jinxz_k@live.com>
+Date:   Wed Sep 16 03:55:10 2020 +0800
+
+    seafile: fix accessing libraries > 2GB on 32 bit systems - fixes #4588
+
+commit b89f8c05cfd760abb9b5c403255a66b16f057cf2
+Author: Nick Craig-Wood <nick@craig-wood.com>
+Date:   Fri Sep 11 16:34:54 2020 +0100
+
+    vfs: detect and recover from a file being removed externally from the cache
+    
+    Before this change if a file was removed from the cache while rclone
+    is running then rclone would not notice and proceed to re-create it
+    full of zeros.
+    
+    This change notices files that we expect to have data in going missing
+    and if they do logs an ERROR recovers.
+    
+    It isn't recommended deleting files from the cache manually with
+    rclone running!
+    
+    See: https://forum.rclone.org/t/corrupted-data-streaming-after-vfs-meta-files-removed/18997
+    Fixes #4602
+
+commit b81dc164840ace901e2ee861ff01f23bca9454c6
+Author: Nick Craig-Wood <nick@craig-wood.com>
+Date:   Mon Sep 7 16:18:52 2020 +0100
+
+    acounting: fix incorrect speed and transferTime in core/stats
+    
+    Before this change the code which summed up the existing transfers
+    over all the stats groups forgot to add the old transfer time and old
+    transfers in.
+    
+    This meant that the speed and elapsedTime got increasingly inaccurate
+    over time due to the transfers being culled from the list but their
+    time not being accounted for.
+    
+    This change adds the old transfers into the sum which fixes the
+    problem.
+    
+    This was only a problem over the rc.
+    
+    Fixes #4569
+
+commit 0e121eeddbcfeb500092a7cfb24d0a8634df122f
+Author: Nick Craig-Wood <nick@craig-wood.com>
+Date:   Sun Sep 13 10:23:47 2020 +0100
+
+    Start v1.53.2-DEV development

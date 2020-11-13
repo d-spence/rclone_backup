@@ -2,36 +2,29 @@
 # Compress a folder as a zip archive and backup to remote location using rclone
 # rclone must be configured separately and should be added to env variable path
 
-import os, zipfile, logging, subprocess
+import os, sys, zipfile, logging, subprocess
 from datetime import datetime
 
+from load_ini import *
 
-logging.basicConfig(
-    level=logging.INFO,
-    format="{asctime}: {levelname}: {message}",
-    datefmt="%y-%m-%d %H:%M:%S",
-    style="{",
-    )
 
-src_dir = "D:\\Projects" # which folder to backup
-local_save_dir = "D:\\Backup" # where to save archive locally
-remote_save_dir = "rclone\\backup" # remote save location
-remote_alias = "google-drive" # rclone's config name for remote server
-filter_file = "D:\\Projects\\filter-file.txt" # rclone filter
-
-save_remotely = True # Will prompt user to upload remotely if True
-use_time = True # append time to date for unique filenames
-if use_time:
+if use_time_in_fn:
     # Get today's formatted date with time
     date = datetime.now().strftime("%y-%m-%d_%H%M%S")
 else:
     date = datetime.now().strftime("%y-%m-%d")
-    
 
-def check_dirs():
-    # Check that all directories exist; if not, an exception will be raised
-    os.chdir(src_dir) # changes current working dir to src_dir
-    # TODO -- Need to add checks
+try:    
+    app_path = os.path.dirname(sys.argv[0]) # Get the path where app is located
+    filter_file_path = os.path.join(app_path, filter_file) # abs path of filter file
+
+    if not os.path.isfile(filter_file_path):
+        raise Exception(f"No filter file exists at '{filter_file_path}'")
+except Exception as e:
+    logging.error(f"{e}")
+    exit(1)
+
+os.chdir(src_dir) # Change current working directory to src_dir
 
 
 def create_zip(f_list, basename=True):
@@ -68,10 +61,10 @@ def rclone_list_all():
     # Return a list of every file and folder in src directory
     # Each file path will be relative to the main archive folder (src_dir)
     logging.info(f"Getting list of files in '{src_dir}'")
-    result = subprocess.check_output(f"rclone lsf -R {src_dir} --filter-from {filter_file}", 
+    result = subprocess.check_output(f"rclone lsf -R {src_dir} --filter-from {filter_file_path}", 
                                     shell=True, text=True).splitlines()
     
-    logging.debug(f"rclone lsf output {result}")
+    # logging.debug(f"rclone lsf output {result}")
     return result
 
 
@@ -87,7 +80,6 @@ def rclone_save_to_remote(file_path, auto_upload=False):
         logging.info(f"Skipping upload to remote server")
 
 
-check_dirs()
 file_list = rclone_list_all()
 zip_path = create_zip(file_list)
 get_zip_info(zip_path)
