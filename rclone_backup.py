@@ -53,7 +53,7 @@ def get_zip_info(zip_path):
     # Get info about a newly created zip archive
     logging.info(f"Getting info for zip file '{os.path.basename(zip_path)}'")
     with zipfile.ZipFile(zip_path, 'r') as zip_file:
-        logging.info(f"File Size: {os.path.getsize(zip_path)} bytes")
+        logging.info(f"File Size: {os.path.getsize(zip_path):,} bytes")
         logging.info(f"# of Files: {len(zip_file.filelist)}")
 
 
