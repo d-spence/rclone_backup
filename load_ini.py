@@ -4,11 +4,11 @@ from configparser import ConfigParser
 
 # logging basic configuration
 logging.basicConfig(
-    level=logging.DEBUG,
+    level=logging.INFO,
     format="{asctime}: {levelname}: {message}",
     datefmt="%y-%m-%d %H:%M:%S",
     style="{",
-    )
+)
 
 try:
     # Create parser for ini file

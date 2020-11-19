@@ -1,4 +1,5 @@
 # Rclone will ignore these files and folders
+- rclone_backup/rclone/
 - .git/
 - .vscode/
 - .ipynb_checkpoints/

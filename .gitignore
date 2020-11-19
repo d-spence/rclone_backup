@@ -139,3 +139,4 @@ cython_debug/
 
 # My ignored files/folders
 .vscode/
+rclone/
